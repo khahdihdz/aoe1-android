@@ -2,6 +2,7 @@ plugins { id("com.android.application") }
 android {
   namespace = "org.khahdihdz.aoe1"
   compileSdk = 35
+  ndkVersion = "27.2.12479018"
   defaultConfig {
     applicationId = "org.khahdihdz.aoe1"
     minSdk = 23
