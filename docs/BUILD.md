@@ -17,10 +17,9 @@ This downloads upstream SDL 2.30.11 and copies its Android Java activity classes
 
 ## Build ARM64 debug APK
 ```bash
-cd android
 gradle :app:assembleDebug
 ```
-Output: `app/build/outputs/apk/debug/app-debug.apk`.
+Output: `android/app/build/outputs/apk/debug/app-debug.apk`.
 
 The foundation build is a debug APK signed with Android's debug key. Do not distribute it as a production release. Configure a private release keystore through CI secrets before publishing.
 
