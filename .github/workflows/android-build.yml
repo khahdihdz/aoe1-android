@@ -29,7 +29,6 @@ jobs:
           unzip -q "$RUNNER_TEMP/gradle.zip" -d "$RUNNER_TEMP"
           echo "$RUNNER_TEMP/gradle-8.9/bin" >> "$GITHUB_PATH"
       - name: Build debug APK
-        working-directory: android
         run: gradle --no-daemon :app:assembleDebug
       - name: Verify ARM64 libraries
         run: |
