@@ -10,7 +10,7 @@ Upstream: https://github.com/FolkertVanVerseveld/aoe (Apache-2.0; default branch
 
 The upstream project is C++17 and currently uses SDL2, SDL2_mixer, OpenGL, Dear ImGui and several vendored/submodule dependencies. Its README describes basic gameplay and multiplayer as the current playable path; single-player is approximated by hosting a multiplayer session and adding computer players, whose behavior is limited. It requires the user to own and supply original AoE / Rise of Rome data.
 
-The Android repository currently contains a separate C++20 SDL2/OpenGL ES demo shell and touch controller. It does not contain the upstream engine source. Keep this native Android foundation intact while introducing a separate web target.
+The Android repository contains a separate C++20 SDL2/OpenGL ES demo shell and touch controller. The upstream engine is now linked as the pinned Git submodule at `upstream/aoe`; the Android demo remains separate until the shared engine boundary is designed. Keep this native Android foundation intact while introducing a separate web target.
 
 ## Port strategy
 
@@ -48,7 +48,7 @@ The Android repository currently contains a separate C++20 SDL2/OpenGL ES demo s
 
 - [x] Add responsive web launcher and WebAssembly/WebGL capability checks.
 - [x] Add this source audit and staged port plan.
-- [ ] Pin and import upstream C++ source with attribution.
+- [x] Pin upstream C++ source as a Git submodule with attribution (commit `8894335d54371648b46d3c18bb2c6283fd2a604d`).
 - [ ] Produce first Emscripten `.wasm/.js/.data` artifact.
 - [ ] Implement browser filesystem/data validation.
 - [ ] Port and validate multiplayer transport.
