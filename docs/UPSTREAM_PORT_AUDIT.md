@@ -1,52 +1,34 @@
-# Upstream AoE Android port audit
+# Upstream AoE Android port status
 
-## Selected upstream
+## Current integration milestone
 
-- Project: [FolkertVanVerseveld/aoe](https://github.com/FolkertVanVerseveld/aoe)
-- Pinned revision: `8894335d54371648b46d3c18bb2c6283fd2a604d` (2026-11-07)
-- License: Apache-2.0 (retain upstream LICENSE and notices)
-- Import method: Git submodule at `third_party/aoe-upstream`, including its declared submodules.
+The Android CMake path now selects the upstream `empires` engine instead of the standalone demo renderer. It applies a small Android compatibility layer at configure time and builds the upstream executable as `libmain.so`, which SDL's Android Activity loads.
 
-The upstream project is a C++17 reimplementation of Age of Empires / The Rise of Rome. It expects original game data supplied by the player. No proprietary game data is included here.
+Pinned upstream source: `8894335d54371648b46d3c18bb2c6283fd2a604d`.
 
-## Findings from the source
+## Android compatibility work in this milestone
 
-The upstream desktop CMake target currently assumes:
+- Use NDK GLES3 headers instead of desktop gl3w.
+- Request an OpenGL ES 3.0 context and GLSL ES 3.00.
+- Exclude desktop SDL system-window headers and use SDL_OpenURL on Android.
+- Skip system mouse cursor and desktop fullscreen/window-clipping behavior.
+- Build SDL2_mixer for Android with optional desktop codecs disabled for the first bring-up. WAV/PCM is the initial audio profile; MP3 music support is deferred.
+- Compile Dear ImGui's OpenGL3 backend in ES3 mode.
+- Rename upstream main() at compile time and bridge SDL_main to SDL's Android Activity entry point.
 
-- SDL2 and SDL2_mixer are discoverable as desktop packages.
-- OpenGL desktop headers/libraries and the bundled `gl3w` loader.
-- Dear ImGui core plus SDL2 and OpenGL3 backends.
-- `miniz`, `tracy`, and `wepoll` git submodules.
-- Desktop window/display/cursor/fullscreen behavior.
-- Desktop filesystem paths and Linux process/browser helpers.
+## Not yet complete / must be validated
 
-The existing Android shell builds a separate SDL2 + OpenGL ES 3 demo. It is not yet building the upstream `empires` target. This audit intentionally records that boundary instead of claiming an APK already runs the original game.
+1. CI may reveal more desktop assumptions in upstream code or its bundled ImGui revision; compiler output is authoritative.
+2. Android pause/resume, back button, audio focus and GL context recreation require device testing.
+3. The upstream file browser expects desktop paths. Android Storage Access Framework (SAF) integration is still required for game data selection.
+4. Touch input is not yet a complete RTS command model. Validate SDL touch/mouse behavior, then add pinch zoom, multi-selection and context commands.
+5. Proprietary game data is not included; users must import data from a legitimate copy.
+6. A successful APK compile does not prove gameplay compatibility. Test on a physical ARM64 device with valid data.
 
-## Android blockers to resolve before enabling the upstream target
-
-1. **Graphics loader:** replace the desktop `gl3w` initialization and GL headers with an Android GLES3 path; validate all used GL entry points and shader versions.
-2. **Dear ImGui:** compile the SDL2 + OpenGL3 backend against GLES3 with an ES shader version; avoid desktop GL loader assumptions.
-3. **CMake dependencies:** provide Android builds of SDL2_mixer (and its codecs), link Android system libraries, and omit desktop OpenGL / pkg-config / epoll-shim discovery on Android.
-4. **SDL platform layer:** guard `SDL_syswm.h`, desktop display mode, cursor, window positioning and clipping code. Android owns the activity/window lifecycle.
-5. **Touch interaction:** map finger events to game UI and world selection; add pinch zoom, drag camera, long-press/context commands and multi-touch-safe gesture handling.
-6. **Storage:** add Android document-picker / SAF import for the user's legally obtained AoE data folder. Persist only an app-private URI/path grant and expose a clear data-folder setup screen.
-7. **Lifecycle/audio:** handle pause/resume, audio focus, surface/context recreation, and safe shutdown/restart.
-8. **Validation:** build and run on a physical ARM64 device with a user-supplied data set. CI compilation alone is not proof of gameplay compatibility.
-
-## Port sequence
-
-- **P0 (this change):** pin and fetch the upstream source as a submodule, preserve license, document blockers.
-- **P1:** make the upstream source compile for Android ARM64 (GLES3, SDL2_mixer, platform guards).
-- **P2:** launch the actual upstream engine in the Android Activity and add storage onboarding.
-- **P3:** implement touch-first RTS controls and lifecycle hardening.
-- **P4:** validate AoE and Rise of Rome data compatibility on real devices; produce signed release builds.
-
-## Reproducible checkout
+## Build
 
 ```sh
 git clone --recurse-submodules https://github.com/khahdihdz/aoe1-android.git
-# or, inside an existing clone:
-git submodule update --init --recursive
+bash scripts/bootstrap-sdl.sh
+./gradlew :app:assembleDebug
 ```
-
-The submodule is pinned by the gitlink in this repository; do not silently float it to upstream `master`.
