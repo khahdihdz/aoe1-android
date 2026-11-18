@@ -1,0 +1,3 @@
+[submodule "third_party/aoe-upstream"]
+	path = third_party/aoe-upstream
+	url = https://github.com/FolkertVanVerseveld/aoe.git

@@ -1,7 +1,7 @@
 name: Native checks
 on:
   push:
-    branches: [main, develop]
+    branches: [main, develop, "port/**"]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -12,6 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Verify pinned upstream source
+        run: |
+          test -f third_party/aoe-upstream/CMakeLists.txt
+          test "$(git -C third_party/aoe-upstream rev-parse HEAD)" = "8894335d54371648b46d3c18bb2c6283fd2a604d"
       - name: Bootstrap SDL2
         run: bash scripts/bootstrap-sdl.sh
       - name: Configure native build
