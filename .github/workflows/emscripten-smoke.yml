@@ -1,0 +1,46 @@
+name: AoE1 Web - Emscripten smoke test
+
+on:
+  push:
+    branches: [main, "web/**"]
+    paths:
+      - "web/emscripten/**"
+      - ".github/workflows/emscripten-smoke.yml"
+  pull_request:
+    paths:
+      - "web/emscripten/**"
+      - ".github/workflows/emscripten-smoke.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-sdl2-webgl2-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Emscripten SDK
+        uses: mymindstorm/setup-emsdk@v14
+      - name: Show toolchain versions
+        run: |
+          emcc --version
+          em++ --version
+      - name: Build SDL2 + WebGL 2 smoke test
+        run: |
+          mkdir -p dist
+          em++ web/emscripten/smoke.cpp -O2 \
+            -sUSE_SDL=2 \
+            -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sFULL_ES3=1 \
+            -sALLOW_MEMORY_GROWTH=1 -sEXIT_RUNTIME=0 \
+            -o dist/aoe1-webgl-smoke.html
+          test -s dist/aoe1-webgl-smoke.html
+          test -s dist/aoe1-webgl-smoke.js
+          test -s dist/aoe1-webgl-smoke.wasm
+      - name: Upload browser smoke-test artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aoe1-webgl2-smoke
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
