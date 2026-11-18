@@ -1,4 +1,4 @@
-name: Web launcher - GitHub Pages
+name: AoE1 Web - GitHub Pages
 on:
   push:
     branches: [main]
@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Validate web launcher
+      - name: Validate browser app
         run: |
           test -s web/index.html
           test -s web/app.js
