@@ -1,27 +1,49 @@
-# AoE1 Android + Web
+# AoE1 Web
 
-Native Android and browser-port foundations for an open-source Age of Empires 1-compatible RTS engine. The web target is being developed alongside Android in this repository.
+Cross-device browser port of the open-source Age of Empires 1-compatible engine from [FolkertVanVerseveld/aoe](https://github.com/FolkertVanVerseveld/aoe).
 
-## Project status
+## Platform strategy
 
-- **Android:** SDL2 + OpenGL ES native shell and ARM64 APK workflow.
-- **Web:** responsive launcher, browser capability checks, GitHub Pages and Cloudflare Pages deployment workflows.
-- **Game engine:** the upstream C++ engine has been audited, but is not yet integrated or compiled to WebAssembly. The current web page is a development launcher, not a playable game.
+This repository is **Web-only**. There is no Android APK, Gradle project, Android NDK target, or platform-specific native app.
 
-## Upstream engine
+The browser client is designed to run on:
+- Desktop and laptop browsers (Windows, macOS, Linux, ChromeOS).
+- Android phones and tablets.
+- iPhone and iPad browsers.
+- Touch, mouse, and keyboard input where supported.
 
-The planned engine source is [FolkertVanVerseveld/aoe](https://github.com/FolkertVanVerseveld/aoe), licensed under Apache-2.0. It uses C++17, SDL2, SDL2_mixer and OpenGL. Its current README reports basic gameplay and limited computer-player behavior. A legitimate copy of AoE / Rise of Rome data is required; proprietary assets are not included here.
+The web UI uses responsive layout and browser-native APIs. Actual engine execution requires a successful Emscripten/WebAssembly port; the current page is a development launcher, not yet a playable game.
 
-## Web preview
+## Current status
 
-- Local preview: serve the `web/` directory with any static HTTP server.
-- GitHub Pages: enable Pages with **GitHub Actions** as the build/deployment source, then run the **Web launcher - GitHub Pages** workflow.
-- Cloudflare Pages: create a Pages project named `aoe1-web` and add repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. The workflow deploys the `web/` directory.
+- Responsive web launcher and local game-data folder selection.
+- Browser capability checks for WebAssembly and WebGL 2.
+- Pinned upstream source in `upstream/aoe` (Apache-2.0).
+- GitHub Pages and Cloudflare Pages deployment workflows.
+- Emscripten engine integration, browser networking, and playable game runtime remain in progress.
 
-## Porting plan
+## Game data
 
-See [docs/WEB_PORT_PLAN.md](docs/WEB_PORT_PLAN.md) for the source audit, Emscripten strategy, browser networking constraints and staged milestones.
+A legitimate copy of AoE / Rise of Rome data is required. Proprietary game assets are not included in this repository. Selected files are read locally by the browser and are not uploaded by the launcher.
 
-## Android build
+## Deployment
 
-See [docs/BUILD.md](docs/BUILD.md).
+### GitHub Pages
+Enable GitHub Pages with **GitHub Actions** as the deployment source. The `Web - GitHub Pages` workflow publishes the `web/` directory.
+
+### Cloudflare Pages
+Create a Pages project named `aoe1-web` and add repository secrets:
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ACCOUNT_ID`
+
+The `Web - Cloudflare Pages` workflow deploys the `web/` directory. A successful validation run may skip deployment when secrets are missing.
+
+## Development
+
+Serve the `web/` directory with any static HTTP server. Do not open `index.html` directly as some browser APIs require HTTP(S).
+
+See [docs/WEB_PORT_PLAN.md](docs/WEB_PORT_PLAN.md) for the engine audit, Emscripten strategy, browser networking constraints, and milestones.
+
+## Credits and license
+
+The upstream engine is licensed under Apache-2.0. See [upstream/aoe](https://github.com/FolkertVanVerseveld/aoe) and retain its license and notices when distributing derived builds.
