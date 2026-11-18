@@ -70,6 +70,8 @@ The pinned upstream source was inspected beyond its top-level CMake file:
 - The upstream CMake file unconditionally requires SDL2, SDL2_mixer and OpenGL, includes the ImGui SDL2/OpenGL3 backends, and links platform libraries. A separate Emscripten target must replace these discovery/link steps rather than merely passing `-sUSE_SDL=2` to the desktop target.
 - Upstream source has multiple submodules (`imgui`, `tracy`, `wepoll`, `miniz`). The browser target should avoid Tracy and wepoll initially and use only dependencies actually needed by the game target.
 
+- `game/src/net/net.cpp` and `game/src/net/net.hpp` implement native TCP sockets, OS headers, epoll, nonblocking socket polling, and a threaded server controller. The existing host/server cannot run inside a browser tab. Browser multiplayer therefore needs a new WebSocket client transport and a separate relay/service; it is not a compile-time socket substitution. The current packet framing and protocol types can be reused only after validating byte order, partial frames, reconnect behavior and host authority.
+
 These findings mean a safe first milestone is a **minimal browser engine build** (window/context + event loop + asset filesystem), not a claim of full gameplay. Networking remains a separate milestone because native socket code must be replaced with a browser WebSocket transport.
 
 ## Updated implementation order
