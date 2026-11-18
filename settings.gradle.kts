@@ -5,3 +5,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "AOE1Android"
 include(":app")
+project(":app").projectDir = file("android/app")
