@@ -4,36 +4,43 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#17251c">
-  <meta name="description" content="AoE1 Web — dự án port engine C++ sang WebAssembly.">
-  <title>AoE1 Web</title>
+  <meta name="description" content="AoE1 Web — Age of Empires 1 open-source engine port for desktop, mobile and tablet browsers.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>AoE1 Web — Play across devices</title>
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
   <main class="shell">
     <header class="topbar">
-      <a class="brand" href="./" aria-label="AoE1 Web home"><span class="brand-mark">A</span><span>AOE1 <small>WEB PORT</small></span></a>
-      <span class="status"><i></i> DEVELOPMENT BUILD</span>
+      <a class="brand" href="./" aria-label="AoE1 Web home"><span class="brand-mark">A</span><span>AOE1 <small>WEB EDITION</small></span></a>
+      <span class="status"><i></i> WEB DEVELOPMENT</span>
     </header>
     <section class="hero">
-      <p class="eyebrow">AGE OF EMPIRES · WEBASSEMBLY PORT</p>
+      <p class="eyebrow">AGE OF EMPIRES · CROSS-DEVICE BROWSER PORT</p>
       <h1>Build your<br><em>empire.</em></h1>
-      <p class="intro">Dự án chuyển engine C++ của FolkertVanVerseveld/aoe sang nền tảng trình duyệt. Giao diện này là cổng khởi chạy và kiểm tra tương thích; engine WebAssembly đang trong giai đoạn port, chưa phải bản game chơi được.</p>
+      <p class="intro">Một phiên bản AoE1 chạy trực tiếp trên trình duyệt, hướng tới máy tính, laptop, điện thoại và máy tính bảng. Không cần APK hay cài ứng dụng. Engine C++ đang được chuyển sang WebAssembly; đây hiện là launcher thử nghiệm, chưa phải bản game chơi được.</p>
       <div class="actions">
         <button id="choose-data" class="primary" type="button">Chọn thư mục dữ liệu game</button>
-        <button id="check-engine" class="secondary" type="button">Kiểm tra WebAssembly</button>
+        <button id="check-engine" class="secondary" type="button">Kiểm tra trình duyệt</button>
       </div>
       <input id="data-folder" type="file" webkitdirectory directory multiple hidden>
       <p id="message" class="message" role="status" aria-live="polite">Chưa nạp dữ liệu. Chỉ chọn bản game bạn sở hữu hợp pháp; dữ liệu được xử lý cục bộ trong trình duyệt.</p>
     </section>
     <section class="panel">
-      <div class="panel-heading"><div><span class="eyebrow">PORT STATUS</span><h2>Engine integration</h2></div><span class="tag">PHASE 0</span></div>
+      <div class="panel-heading"><div><span class="eyebrow">PORT STATUS</span><h2>Web engine integration</h2></div><span class="tag">PHASE 1</span></div>
       <div class="progress"><span></span></div>
       <div class="check-list">
-        <div><b>01</b><span>Web launcher & responsive shell</span><strong class="done">READY</strong></div>
-        <div><b>02</b><span>Emscripten / SDL2 / WebGL 2 compatibility</span><strong>IN PROGRESS</strong></div>
-        <div><b>03</b><span>Browser filesystem & user-owned game data</span><strong>PLANNED</strong></div>
-        <div><b>04</b><span>WebSocket multiplayer transport</span><strong>PLANNED</strong></div>
+        <div><b>01</b><span>Responsive browser interface</span><strong class="done">READY</strong></div>
+        <div><b>02</b><span>Emscripten / SDL2 / WebGL 2 engine</span><strong>IN PROGRESS</strong></div>
+        <div><b>03</b><span>Mouse, keyboard and touch controls</span><strong>PLANNED</strong></div>
+        <div><b>04</b><span>Local game data & WebSocket multiplayer</span><strong>PLANNED</strong></div>
       </div>
+    </section>
+    <section class="compat">
+      <span class="eyebrow">ONE WEB APP · MANY DEVICES</span>
+      <p>Windows · macOS · Linux · ChromeOS · Android · iPhone · iPad</p>
+      <small>Use a recent version of Chrome, Edge, Firefox or Safari with WebAssembly and WebGL 2 enabled.</small>
     </section>
     <footer>Open-source engine port · No copyrighted game assets are bundled · <a href="https://github.com/FolkertVanVerseveld/aoe" target="_blank" rel="noreferrer">Upstream project</a></footer>
   </main>
