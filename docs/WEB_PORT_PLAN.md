@@ -57,3 +57,27 @@ Pinned source commit: `8894335d54371648b46d3c18bb2c6283fd2a604d`, linked at `ups
 - [ ] Implement browser filesystem and game-data validation.
 - [ ] Port and validate multiplayer transport.
 - [ ] Publish playable build to GitHub Pages and Cloudflare Pages.
+
+## Source-level compatibility findings (2026-11-18)
+
+The pinned upstream source was inspected beyond its top-level CMake file:
+
+- `game/main.cpp` uses a conventional blocking `Engine::mainloop()` entry point and native error dialogs. The browser entry point must use Emscripten's main-loop API (or SDL's browser loop integration); exceptions must be reported in the web UI/console rather than a native message box.
+- `game/src/engine/gfx.cpp` initializes **gl3w** through `gl3wInit()`. This is a concrete WebGL2 blocker: replace or conditionally bypass gl3w with Emscripten GLES3/WebGL2 entry points, and audit shader GLSL versions and unsupported desktop GL calls before linking.
+- `game/src/engine/audio.cpp` relies extensively on SDL_mixer APIs, including MP3 initialization, music, channel groups and WAV loading from SDL_RWops. SDL2_mixer's Emscripten port and codecs must be verified; browser audio must also be unlocked from a user gesture. A no-audio compile switch may be useful for the first graphics/runtime milestone, but must not silently ship as the final audio implementation.
+- `game/src/engine/async.cpp` uses `std::thread`, mutexes and thread yielding. Start with a single-threaded browser build and audit every thread creation/join and synchronization assumption. Do not enable pthreads until deployment headers and browser isolation are configured.
+- `game/src/engine/file_io.cpp` uses the custom `ci_file` layer and native file descriptors. Implement/verify a virtual-filesystem adapter and test user-selected data import; the launcher’s folder picker alone does not make the engine's file API browser-compatible.
+- The upstream CMake file unconditionally requires SDL2, SDL2_mixer and OpenGL, includes the ImGui SDL2/OpenGL3 backends, and links platform libraries. A separate Emscripten target must replace these discovery/link steps rather than merely passing `-sUSE_SDL=2` to the desktop target.
+- Upstream source has multiple submodules (`imgui`, `tracy`, `wepoll`, `miniz`). The browser target should avoid Tracy and wepoll initially and use only dependencies actually needed by the game target.
+
+These findings mean a safe first milestone is a **minimal browser engine build** (window/context + event loop + asset filesystem), not a claim of full gameplay. Networking remains a separate milestone because native socket code must be replaced with a browser WebSocket transport.
+
+## Updated implementation order
+
+1. Add an isolated `web/emscripten` build target and pin the Emscripten SDK version in CI.
+2. Make the engine entry point browser-aware and replace gl3w initialization with WebGL2-compatible loading.
+3. Compile a no-network, single-threaded smoke-test build; verify canvas creation, resize and clean shutdown.
+4. Mount user-provided AoE data into the virtual filesystem and validate required files without uploading them.
+5. Restore browser audio with tested SDL_mixer codecs.
+6. Port game networking to WebSocket and validate two clients before enabling multiplayer UI.
+
